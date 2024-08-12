@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gas Pressure Meter</title>
+    <link rel="stylesheet" href="assets/style7.css" />
+  </head>
+  <body>
+    
+    <div class="container">
+      <div class="container-sub">
+        <div class="card">
+          <div class="photo-container">
+            <div>
+              <img class="photo" src="assets/athalla.png" />
+              <div class="photo-text">Muhammad Athalla A.</div>
+              <div class="photo-text">02522086</div>
+            </div>
+            <div>
+              <img class="photo" src="assets/azkia.png" />
+              <div class="photo-text">Muhammad Azkia</div>
+              <div class="photo-text">02522087</div>
+            </div>
+            <div>
+              <img class="photo" src="assets/fadhlan.png" />
+              <div class="photo-text">Muhammad Fadlan B.</div>
+              <div class="photo-text">02522091</div>
+            </div>
+          </div>
+          <h2>Gas Pressure</h2>
+          <div>
+            <canvas style="margin: none" id="gauge-pressure"></canvas>
+          </div>
+          <div style="display: none;" id="gasPressureID" name="gasPressure">%gasPressure%</div>
+  
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/gauge.min.js"></script>
+
+    <script>
+      //Gauge Asam Urat
+      var gaugeGasPressure = new RadialGauge({
+        renderTo: "gauge-pressure",
+        width: 400,
+        height: 400,
+        units: "kPa",
+        minValue: 0,
+        maxValue: 1000,
+        colorValueBoxRect: "rgb(255,255,255, 0)",
+        colorValueBoxRectEnd: "rgb(255,255,255, 0)",
+        colorValueBoxBackground: "rgb(255,255,255, 0)",
+        valueInt: 1,
+        valueDec: 1,
+        barWidth: 2,
+        //   value:4.,
+        // valueBox: false,
+        fontUnitsSize: 30,
+        fontValueSize: 40,
+        fontNumbersSize: 25,
+        fontNumbersWeight: "bold",
+        fontUnitsWeight: "bold",
+        majorTicks: ["0", "100", "200", "300", "400", "500", "600", "700", "800", "900", "1000"],
+        minorTicks: 10,
+        strokeTicks: true,
+        highlights: [
+          {
+            from: 0,
+            to: 300,
+            color: "rgb(200,245,0, 0.7)",
+          },
+          {
+            from: 300,
+            to: 500,
+            color: "rgb(0,245,106, 0.7)",
+          },
+          {
+            from: 500,
+            to: 700,
+            color: "rgb(245,135,0, 0.7)",
+          },
+          {
+            from: 700,
+            to: 1000,
+            color: "rgb(240,0,0, 0.7)",
+          },
+        ],
+        colorPlate: "rgb(255,255,255, 0)",
+        borderShadowWidth: 0,
+        borders: false,
+        needleType: "arrow",
+        colorNeedle: "#8c0900",
+        colorNeedleEnd: "#e65719",
+        needleWidth: 3,
+        needleCircleSize: 7,
+        colorNeedleCircleOuter: "#000000",
+        needleCircleOuter: true,
+        needleCircleInner: true,
+        animationDuration: 500,
+        animationRule: "linear",
+      }).draw();
+
+      window.onload = function() {
+        gaugeGasPressure.value = "%gasPressure%";
+      }
+
+      if (!!window.EventSource) {
+        var source = new EventSource("/events");
+
+        source.addEventListener("gasPressure", function (e) {
+            document.getElementById("gasPressureID").innerHTML = e.data;
+
+            var gasPressure = parseFloat(e.data).toFixed(1);
+
+            console.log("Pressure : ", gasPressure);
+            gaugeGasPressure.value = gasPressure;
+          },
+          false
+        );
+      }
+    </script>
+  </body>
+</html>
